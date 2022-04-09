@@ -10,13 +10,16 @@ const FoodSchema = new mongoose.Schema(
 			type: Number,
 			required: true
 		},
-		user: {
+		userId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
 			required: true
+		},
+		entryTime: {
+			type: Date,
+			required: true
 		}
 	},
-	{ timestamps: true }
 );
 
 const FoodIntake = mongoose.model('FoodIntake', FoodSchema);
