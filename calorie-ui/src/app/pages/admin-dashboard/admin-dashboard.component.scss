@@ -1,0 +1,19 @@
+.mat-container {
+  height: 100%;
+  mat-sidenav-container {
+    height: 100%;
+  }
+  mat-sidenav {
+    border: none;
+    width: 80px;
+  }
+}
+.nav-item {
+  width: 100%;
+  height: 80px;
+  margin-top: 16px;
+  &.active {
+    background-color: #673ab6;
+    color: #fff;
+  }
+}

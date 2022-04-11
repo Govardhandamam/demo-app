@@ -22,6 +22,8 @@ import {
   NgxMatTimepickerModule,
   NgxMatNativeDateModule,
 } from '@angular-material-components/datetime-picker';
+import { AdminFoodEntriesComponent } from './components/admin-food-entries/admin-food-entries.component';
+import { AdminReportComponent } from './components/admin-report/admin-report.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,6 +33,8 @@ import {
     CalorieDialogComponent,
     ToolbarComponent,
     CalorieTableComponent,
+    AdminFoodEntriesComponent,
+    AdminReportComponent,
   ],
   imports: [
     BrowserModule,

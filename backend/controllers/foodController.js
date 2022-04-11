@@ -28,7 +28,7 @@ export const getFoodDetailsForCurrentUser = async (req, res) => {
 	try {
 		const { user } = req;
 		const { start, end } = req.query;
-		const result = await FoodIntake.find({ userId: user._id, entryTime: { $gte: new Date(+start), $lt: new Date(+end) } });
+		const result = await FoodIntake.find({ userId: user._id, entryTime: { $gte: new Date(+start), $lte: new Date(+end) } });
 		const dayCalorieMapping = {};
 		result.forEach((item) => {
 			const date = new Date(item.entryTime).toISOString().split('T')[0];
@@ -102,24 +102,59 @@ export const deleteFoodDetails = async (req, res) => {
 };
 
 export const getFoodDetailsForAllUsers = async (req, res) => {
-	const { user } = req;
-	const { start, end } = req.query;
-	const result = await FoodIntake.find({ entryTime: { $gte: new Date(+start), $lt: new Date(+end) } }).populate('userId');
-	const dayCalorieMapping = {};
-	result.forEach((item) => {
-		const date = new Date(item.entryTime).toISOString().split('T')[0];
-		const key = `${item.userId?._id}$${date}`;
-		if (!dayCalorieMapping[key]) {
-			dayCalorieMapping[key] = { calories: 0, userName: item.userId?.name };
-		}
-		dayCalorieMapping[key].calories += item.calories;
-	});
-	const summary = [];
-	Object.keys(dayCalorieMapping).forEach((key) => {
-		if (dayCalorieMapping[key].calories >= CALORIE_LIMIT) {
-			const [userId, date] = key.split('$');
-			summary.push({ date, calories: dayCalorieMapping[key].calories, userName: dayCalorieMapping[key].userName });
-		}
-	});
-	res.status(200).send({ data: result, summary });
+	try {
+		const { start, end } = req.query;
+		const result = await FoodIntake.find({ entryTime: { $gte: new Date(+start), $lte: new Date(+end) } }).populate('userId');
+		const dayCalorieMapping = {};
+		result.forEach((item) => {
+			const date = new Date(item.entryTime).toISOString().split('T')[0];
+			const key = `${item.userId?._id}$${date}`;
+			if (!dayCalorieMapping[key]) {
+				dayCalorieMapping[key] = { calories: 0, userName: item.userId?.name };
+			}
+			dayCalorieMapping[key].calories += item.calories;
+		});
+		const summary = [];
+		Object.keys(dayCalorieMapping).forEach((key) => {
+			if (dayCalorieMapping[key].calories >= CALORIE_LIMIT) {
+				const [userId, date] = key.split('$');
+				summary.push({ date, calories: dayCalorieMapping[key].calories, userName: dayCalorieMapping[key].userName });
+			}
+		});
+		res.status(200).send({ data: result, summary });
+	} catch (err) {
+		res.status(500).send({
+			status: false,
+			message: 'Something went wrong'
+		});
+	}
+};
+
+export const getFoodStats = async (req, res) => {
+	try {
+		const currentDate = new Date();
+		currentDate.setHours(23, 59, 59);
+		const lastWeek = new Date();
+		lastWeek.setDate(currentDate.getDate() - 7);
+		lastWeek.setHours(0, 0, 0);
+		const weekBefore = new Date(lastWeek);
+		weekBefore.setDate(currentDate.getDate() - 7);
+		weekBefore.setHours(0, 0, 0);
+		const weekBeforeEnd = new Date(lastWeek);
+		weekBeforeEnd.setSeconds(weekBeforeEnd.getSeconds() - 1);
+		const lastWeekEntries = await FoodIntake.count({ entryTime: { $gte: lastWeek, $lte: currentDate } });
+		const weekBeforeEntries = await FoodIntake.count({ entryTime: { $gte: weekBefore, $lte: weekBeforeEnd } });
+		const lastWeekAverageCalories = await FoodIntake.aggregate([
+			{ $match: { entryTime: { $gte: lastWeek, $lte: currentDate } } },
+			{ $lookup: { from: 'users', localField: 'userId', foreignField: '_id', as: 'user' } },
+			{ $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+			{ $group: { _id: '$user._id', averageCalories: { $avg: '$calories' }, name: { $first: '$user.name' } } }
+		]);
+		return res.json({ lastWeekEntries, weekBeforeEntries, lastWeekAverageCalories });
+	} catch (err) {
+		res.status(500).send({
+			status: false,
+			message: 'Something went wrong'
+		});
+	}
 };

@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { ToptalAuthService } from './toptal-auth.service';
 import { ToptalSnackbarService } from './toptal-snackbar.service';
 const urlPrefix = 'http://localhost:4000';
 
@@ -11,7 +13,9 @@ export class ToptalHttpService {
   constructor(
     private http: HttpClient,
     private ngxService: NgxUiLoaderService,
-    private toptalSnackbar: ToptalSnackbarService
+    private toptalSnackbar: ToptalSnackbarService,
+    private _authService: ToptalAuthService,
+    private _router: Router
   ) {}
 
   private httpErrorHandler(error: any): any {
@@ -20,6 +24,8 @@ export class ToptalHttpService {
     } else if (error.status === 401) {
       const message = 'Unauthorised request!';
       this.toptalSnackbar.showMessage(message, 'error');
+      this._authService.deleteSession();
+      this._router.navigate(['/login']);
       return { err: message };
     } else if (error.status === 0) {
       const message =
