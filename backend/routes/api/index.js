@@ -3,8 +3,8 @@ import userRouter from './user.js';
 import foodRouter from './food.js';
 const apiRouter = express.Router();
 
-apiRouter.use("/user", userRouter);
+apiRouter.use('/user', userRouter);
 
-apiRouter.use("/food", foodRouter);
+apiRouter.use('/food', foodRouter);
 
-export default apiRouter
+export default apiRouter;

@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectionToDB from './config/connectionToDb.js';
-import routes from "./routes/index.js"
+import routes from './routes/index.js';
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ const startServer = () => {
 		res.send('Hello');
 	});
 
-	app.use("/", routes);
+	app.use('/', routes);
 
 	connectionToDB()
 		.then(() => {
