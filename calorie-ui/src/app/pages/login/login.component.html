@@ -1,0 +1,68 @@
+<mat-toolbar color="primary" class="mat-elevation-z6">
+	<span>Calorie Management</span>
+</mat-toolbar>
+<div fxLayout="row" class="main-container" fxLayoutAlign="center center">
+	<div>
+		<mat-tab-group [selectedIndex]="selectedTab" dynamicHeight class="mat-elevation-z2 tab-background round-corner">
+			<mat-tab label="Login ">
+				<div class="container-padding">
+					<form fxLayout="column" [formGroup]="loginForm" (ngSubmit)="loginUser()">
+						<mat-form-field fxFlex class="input-margin" appearance="outline">
+							<mat-label>Email ID</mat-label>
+							<input matInput formControlName="email" placeholder="Email ID" type="email" name="email"
+								required>
+							<mat-error *ngIf="loginFormControl.email.invalid">Email ID is Invalid!</mat-error>
+						</mat-form-field>
+						<mat-form-field fxFlex class="input-margin" appearance="outline">
+							<mat-label>Password</mat-label>
+							<input matInput formControlName="password" placeholder="Password" type="password"
+								name="password" required>
+							<mat-error *ngIf="loginFormControl.password.invalid">Password is required!</mat-error>
+						</mat-form-field>
+						<button class="input-margin md-button" type="submit" [disabled]="loginForm.invalid"
+							mat-raised-button color="primary">Login</button>
+					</form>
+				</div>
+			</mat-tab>
+			<mat-tab label="Sign Up">
+				<div class="container-padding">
+					<form #formDirective="ngForm" fxLayout="column" [formGroup]="registrationForm"
+						(ngSubmit)="registerUser(formDirective)">
+						<mat-form-field fxFlex class="no-padding" appearance="outline">
+							<mat-label>Name</mat-label>
+							<input formControlName="name" type="text" matInput placeholder="Name">
+							<mat-error
+								*ngIf="registrationFormControl.name.invalid && registrationFormControl.name.touched">
+								Name is required!</mat-error>
+						</mat-form-field>
+						<mat-form-field class="no-padding" appearance="outline">
+							<mat-label>Email ID</mat-label>
+							<input formControlName="email" type="email" matInput placeholder="Email ID">
+							<mat-error *ngIf="registrationFormControl.email.invalid">Email ID is invalid!</mat-error>
+						</mat-form-field>
+						<mat-form-field fxFlex class="no-padding" appearance="outline">
+							<mat-label>Password</mat-label>
+							<input formControlName="password" type="password" matInput placeholder="Password">
+							<mat-error *ngIf="registrationFormControl.password.invalid">Password is required!
+							</mat-error>
+						</mat-form-field>
+						<mat-form-field fxFlex class="no-padding" appearance="outline">
+							<mat-label>Confirm Password</mat-label>
+							<input formControlName="confirmPassword" type="password" matInput
+								placeholder="Confirm Password">
+							<mat-error
+								*ngIf="registrationFormControl.confirmPassword.errors && registrationFormControl.confirmPassword.errors.required">
+								Confirm Password required!</mat-error>
+							<mat-error
+								*ngIf="registrationFormControl.confirmPassword.errors && registrationFormControl.confirmPassword.errors.mustMatch">
+								Passwords do not match!</mat-error>
+						</mat-form-field>
+						<br>
+						<button type="submit" class="mat-btn-md" [disabled]="registrationForm.invalid" mat-raised-button
+							color="primary">Sign Up</button>
+					</form>
+				</div>
+			</mat-tab>
+		</mat-tab-group>
+	</div>
+</div>

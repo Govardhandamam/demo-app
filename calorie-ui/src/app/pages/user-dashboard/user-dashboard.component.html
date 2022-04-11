@@ -1,0 +1,21 @@
+<app-toolbar></app-toolbar>
+<div class="container">
+	<h2>Hello {{userName}},</h2>
+	<div class="filters" fxLayout="row" fxLayoutAlign="space-between center">
+		<mat-form-field appearance="outline">
+			<mat-label>Select date range</mat-label>
+			<mat-date-range-input [formGroup]="dateRange" [rangePicker]="dateRangePicker">
+				<input matStartDate placeholder="Start date" formControlName="start">
+				<input matEndDate placeholder="End date" formControlName="end">
+			</mat-date-range-input>
+			<mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+			<mat-datepicker-toggle matSuffix [for]="dateRangePicker"></mat-datepicker-toggle>
+			<mat-date-range-picker #dateRangePicker></mat-date-range-picker>
+		</mat-form-field>
+		<button mat-stroked-button color="primary" (click)="addItem()">
+			<mat-icon>add</mat-icon> Add Food
+		</button>
+	</div>
+	<div class="summary"></div>
+	<app-calorie-table [calorieData]="userCalorieData"></app-calorie-table>
+</div>

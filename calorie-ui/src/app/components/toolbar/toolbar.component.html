@@ -1,0 +1,11 @@
+<mat-toolbar color="primary" class="mat-elevation-z6">
+	<span>Calorie Management</span>
+	<span class="spacer"></span>
+	<button mat-icon-button [matMenuTriggerFor]="menu">
+		<mat-icon>account_circle</mat-icon>
+	</button>
+	<mat-menu #menu="matMenu">
+		<span mat-menu-item disabled=""><i>{{userData?.name || 'John'}}</i></span>
+		<button mat-menu-item (click)="logout()">Logout</button>
+	</mat-menu>
+</mat-toolbar>
