@@ -46,7 +46,18 @@ export class CalorieDialogComponent implements OnInit {
   onClose(): void {
     this.dialogRef.close();
   }
-  fetchUsers() {}
+  fetchUsers() {
+    this._toptalHttp.get(`/api/v1/user/all`, {}).then(
+      (response) => {
+        if (response) {
+          this.users = response.data;
+        }
+      },
+      (error) => {
+        this.toptalSnackbar.showMessage(error.err, 'error');
+      }
+    );
+  }
   saveData() {
     if (this.calorieItemFormGroup.invalid) {
       return;
@@ -54,7 +65,7 @@ export class CalorieDialogComponent implements OnInit {
     const formData = this.calorieItemFormGroup.value;
     if (this.data?.calorieItem) {
       this._toptalHttp
-        .put(`/api/v1/edit/food/${this.data.calorieItem._id}`, formData)
+        .put(`/api/v1/food/edit/${this.data.calorieItem._id}`, formData)
         .then(
           (response) => {
             if (response) {
@@ -62,18 +73,18 @@ export class CalorieDialogComponent implements OnInit {
             }
           },
           (error) => {
-            this.toptalSnackbar.showMessage(error.message, 'error');
+            this.toptalSnackbar.showMessage(error.err, 'error');
           }
         );
     } else {
-      this._toptalHttp.post(`/api/v1/add/food`, formData).then(
+      this._toptalHttp.post(`/api/v1/food/add`, formData).then(
         (response) => {
           if (response) {
             this.dialogRef.close(true);
           }
         },
         (error) => {
-          this.toptalSnackbar.showMessage(error.message, 'error');
+          this.toptalSnackbar.showMessage(error.err, 'error');
         }
       );
     }

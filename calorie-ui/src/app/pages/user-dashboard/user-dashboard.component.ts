@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CalorieDialogComponent } from 'src/app/components/calorie-dialog/calorie-dialog.component';
 import { ToptalAuthService } from 'src/app/services/toptal-auth.service';
 import { ToptalHttpService } from 'src/app/services/toptal-http.service';
+import { ToptalNotifService } from 'src/app/services/toptal-notif.service';
 import { ToptalSnackbarService } from 'src/app/services/toptal-snackbar.service';
 
 @Component({
@@ -15,19 +16,14 @@ export class UserDashboardComponent implements OnInit {
   userName: string = '';
   maxDate: Date;
   dateRange: FormGroup;
-  userCalorieData: any[] = [
-    {
-      userName: 'Some user',
-      item: 'Banana',
-      calories: 123,
-      entryTime: new Date(),
-    },
-  ];
+  userCalorieData: any[] = [];
+  summary: any[] = [];
   constructor(
     private _authService: ToptalAuthService,
     private dialogService: MatDialog,
     private _toptalHttp: ToptalHttpService,
-    private toptalSnackbar: ToptalSnackbarService
+    private toptalSnackbar: ToptalSnackbarService,
+    private toptalNotifService: ToptalNotifService
   ) {
     const today = new Date();
     this.maxDate = today;
@@ -42,17 +38,26 @@ export class UserDashboardComponent implements OnInit {
   ngOnInit(): void {
     const userData = this._authService.getSession();
     this.userName = userData?.name;
+    this.fetchItems();
+    this.toptalNotifService.userItemsSubject.subscribe((value) => {
+      if (value === 'RELOAD') {
+        this.fetchItems();
+      }
+    });
   }
   fetchItems() {
-    this._toptalHttp.get(`/api/v1/get/food/user`).then(
+    const queryParams = this.dateRange.value;
+    queryParams.start = new Date(queryParams.start).getTime();
+    queryParams.end = new Date(queryParams.end).getTime();
+    this._toptalHttp.get(`/api/v1/food/user`, queryParams).then(
       (response) => {
         if (response) {
           this.userCalorieData = response.data;
-          console.log(response);
+          this.summary = response.summary;
         }
       },
       (error) => {
-        this.toptalSnackbar.showMessage(error.message, 'error');
+        this.toptalSnackbar.showMessage(error.err, 'error');
       }
     );
   }

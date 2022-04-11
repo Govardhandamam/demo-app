@@ -5,8 +5,8 @@
 		<mat-form-field appearance="outline">
 			<mat-label>Select date range</mat-label>
 			<mat-date-range-input [formGroup]="dateRange" [rangePicker]="dateRangePicker">
-				<input matStartDate placeholder="Start date" formControlName="start">
-				<input matEndDate placeholder="End date" formControlName="end">
+				<input matStartDate (dateChange)="fetchItems()" placeholder="Start date" formControlName="start">
+				<input matEndDate (dateChange)="fetchItems()" placeholder="End date" formControlName="end">
 			</mat-date-range-input>
 			<mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
 			<mat-datepicker-toggle matSuffix [for]="dateRangePicker"></mat-datepicker-toggle>
@@ -16,6 +16,13 @@
 			<mat-icon>add</mat-icon> Add Food
 		</button>
 	</div>
-	<div class="summary"></div>
+	<mat-divider></mat-divider>
+	<div class="summary">
+		<h3 class="warning-color">Daily limit Warning!:</h3>
+		<ul>
+			<li *ngFor="let item of summary">{{item.date}}: <i>Calories: {{item.calories}}</i></li>
+		</ul>
+	</div>
+	<mat-divider></mat-divider>
 	<app-calorie-table [calorieData]="userCalorieData"></app-calorie-table>
 </div>

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ToptalSnackbarService } from './toptal-snackbar.service';
-const urlPrefix = 'http://localhost:3000';
+const urlPrefix = 'http://localhost:4000';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +27,7 @@ export class ToptalHttpService {
       this.toptalSnackbar.showMessage(message, 'error');
       return { err: message };
     } else {
-      return { err: error };
+      return { err: error.message };
     }
   }
   get(route: string, params = {}, loader = true): Promise<any> {

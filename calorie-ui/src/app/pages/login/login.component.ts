@@ -58,11 +58,11 @@ export class LoginComponent implements OnInit {
       this.toptalSnackbar.showMessage('Please fill all details!', 'error');
       return;
     } else {
-      this.toptalHttp.post('/api/login', this.loginForm.value).then(
+      this.toptalHttp.post('/api/v1/user/login', this.loginForm.value).then(
         (response) => {
           if (response) {
             this.authService.saveSession(response);
-            if (response.userData.isAdmin) {
+            if (response.user.isAdmin) {
               this.router.navigate(['/admin-dashboard']);
             } else {
               this.router.navigate(['/']);

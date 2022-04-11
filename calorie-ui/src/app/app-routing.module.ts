@@ -1,13 +1,22 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ToptalAuthGuard } from './guards/http-auth.guard';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { LoginComponent } from './pages/login/login.component';
 import { UserDashboardComponent } from './pages/user-dashboard/user-dashboard.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: '', component: UserDashboardComponent },
-  { path: 'admin-dashboard', component: AdminDashboardComponent },
+  { path: 'login', canActivate: [ToptalAuthGuard], component: LoginComponent },
+  {
+    path: '',
+    canActivate: [ToptalAuthGuard],
+    component: UserDashboardComponent,
+  },
+  {
+    path: 'admin-dashboard',
+    canActivate: [ToptalAuthGuard],
+    component: AdminDashboardComponent,
+  },
 ];
 
 @NgModule({

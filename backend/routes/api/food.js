@@ -1,12 +1,13 @@
 import express from 'express';
 import { isAdminAuthorization, isAuthorised } from '../../config/apiMiddleware.js';
-import { getFoodDetailsForCurrentUser, addFood, editFoodDetails, deleteFoodDetails } from '../../controllers/foodController.js';
+import { getFoodDetailsForCurrentUser, addFood, editFoodDetails, deleteFoodDetails, getFoodDetailsForAllUsers } from '../../controllers/foodController.js';
 const foodRouter = express.Router();
 
 foodRouter
-	.get('/get/food/user', isAuthorised, getFoodDetailsForCurrentUser)
-	.post('/add/food', isAuthorised, addFood)
-	.put('/edit/food/:id', isAuthorised, isAdminAuthorization, editFoodDetails)
-	.delete('/delete/food/:id', isAuthorised, isAdminAuthorization, deleteFoodDetails);
+	.get('/user', isAuthorised, getFoodDetailsForCurrentUser)
+	.get('/allUserItems', isAuthorised, isAdminAuthorization, getFoodDetailsForAllUsers)
+	.post('/add', isAuthorised, addFood)
+	.put('/edit/:id', isAuthorised, editFoodDetails)
+	.delete('/delete/:id', isAuthorised, deleteFoodDetails);
 
 export default foodRouter;

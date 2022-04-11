@@ -8,7 +8,7 @@ export class ToptalAuthService {
 
   saveSession(data: any): void {
     localStorage.setItem('auth_token', data.token);
-    localStorage.setItem('user_data', JSON.stringify(data.userData));
+    localStorage.setItem('user_data', JSON.stringify(data.user));
   }
   deleteSession(): void {
     localStorage.removeItem('auth_token');

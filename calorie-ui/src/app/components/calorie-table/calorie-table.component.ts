@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ToptalAuthService } from 'src/app/services/toptal-auth.service';
 import { ToptalHttpService } from 'src/app/services/toptal-http.service';
+import { ToptalNotifService } from 'src/app/services/toptal-notif.service';
 import { ToptalSnackbarService } from 'src/app/services/toptal-snackbar.service';
 import { CalorieDialogComponent } from '../calorie-dialog/calorie-dialog.component';
 
@@ -19,7 +20,8 @@ export class CalorieTableComponent implements OnInit {
     private _authService: ToptalAuthService,
     private dialogService: MatDialog,
     private _toptalHttp: ToptalHttpService,
-    private toptalSnackbar: ToptalSnackbarService
+    private toptalSnackbar: ToptalSnackbarService,
+    private toptalNotifService: ToptalNotifService
   ) {}
 
   ngOnInit(): void {
@@ -37,18 +39,20 @@ export class CalorieTableComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: any[]) => {
       if (result) {
+        this.toptalNotifService.userItemsSubject.next('RELOAD');
       }
     });
   }
   deleteItem(item: any): void {
-    this._toptalHttp.delete(`/api/v1/delete/food/${item._id}`, {}).then(
+    this._toptalHttp.delete(`/api/v1/food/delete/${item._id}`, {}).then(
       (response) => {
         if (response) {
           this.toptalSnackbar.showMessage(response.message);
+          this.toptalNotifService.userItemsSubject.next('RELOAD');
         }
       },
       (error) => {
-        this.toptalSnackbar.showMessage(error.message, 'error');
+        this.toptalSnackbar.showMessage(error.err, 'error');
       }
     );
   }

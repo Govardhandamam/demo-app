@@ -24,8 +24,8 @@ export class ToptalAuthGuard implements CanActivate {
     | UrlTree {
     const userData = this.authService.getSession();
     if (!this.authService.isAuthenticated()) {
-      if (state.url !== '/') {
-        this.router.navigate(['/']);
+      if (state.url !== '/login') {
+        this.router.navigate(['/login']);
         return false;
       }
       return true;
